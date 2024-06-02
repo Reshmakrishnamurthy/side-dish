@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>COOKIES</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    <style>
+        /* Add any additional CSS styling here */
+        #shopping-cart {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Initially hidden */
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 10px;
+            width: 300px;
+            height: 100%;
+            overflow-y: auto;
+            transition: right 0.3s ease; /* Slide-in animation */
+        }
+        #shopping-cart.show {
+            right: 0; /* Slide in */
+        }
+        #shopping-cart h2 {
+            margin-top: 0;
+        }
+        .cart-item {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        #total-price {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" target="_blank">
+        <button style="font-size :15px; background-color:gold; color:black; border-radius:10px;">X</button>
+    </a>
+    <h1>COOKIES</h1>
+    <section class="container">
+        <div class="cookies-item">
+            <img src="/main folder/cookies/cookies1.2.jpg" height="500" width="400" alt="butter cookies" class="imgMain">
+            <h2>Butter Cookies</h2>
+            <p class="gold-text">Description: Delicate, melt-in-your-mouth treats, crafted with rich buttery goodness and a hint of sweetness, perfect for indulgent moments of blissful delight.</p>
+            <p class="gold-text">Price (6 piece): RM10.00</p>
+            <button class="add-to-cart-btn" data-item="Butter Cookies" data-price="10.00">Add to Cart</button>
+        </div>
+        <div class="cookies-item">
+            <img src="/main folder/cookies/cookies2.2.jpg" height="500" width="400" alt="white chocolate macadamia nut" class="imgMain">
+            <h2>White Chocolate Macadamia Nut</h2>
+            <p class="gold-text">Description: A luxurious blend of creamy white chocolate and crunchy macadamia nuts, baked into golden, chewy cookies that offer a sublime mix of textures and rich, indulgent flavors.</p>
+            <p class="gold-text">Price (6 piece): RM14.00</p>
+            <button class="add-to-cart-btn" data-item="White Chocolate Macadamia Nut" data-price="14.00">Add to Cart</button>
+        </div>
+        <div class="cookies-item">
+            <img src="/main folder/cookies/cookies3.2.jpg" height="500" width="400" alt="chocolate chip cookies" class="imgMain">
+            <h2>Chocolate Chip Cookies</h2>
+            <p class="gold-text">Description: Classic comfort in every bite, these timeless treats feature soft, chewy centers and crisp edges, studded with generous chunks of rich, gooey chocolate, evoking warmth and nostalgia with each delightful taste.</p>
+            <p class="gold-text">Price (6 piece): RM13.00</p>
+            <button class="add-to-cart-btn" data-item="Chocolate Chip Cookies" data-price="13.00">Add to Cart</button>
+        </div>
+        <div class="cookies-item">
+            <img src="/main folder/cookies/cookies4.2.jpg" height="500" width="400" alt="extra chocolate chip cookies" class="imgMain">
+            <h2>Extra Chocolate Chip Cookies</h2>
+            <p class="gold-text">Description: These cookies take decadence to the next level, packed with an abundance of chocolate chips that melt into rich, luscious pockets within a soft, golden-brown dough, delivering a double dose of chocolate in every bite.</p>
+            <p class="gold-text">Price (6 piece): RM16.00</p>
+            <button class="add-to-cart-btn" data-item="Extra Chocolate Chip Cookies" data-price="16.00">Add to Cart</button>
+        </div>
+        <div class="cookies-item">
+            <img src="/main folder/cookies/cookies5.2.jpg" height="500" width="400" alt="brownie cookies" class="imgMain">
+            <h2>Brownie Cookies</h2>
+            <p class="gold-text">Description: The best of both worlds, these cookies combine the fudgy richness of a brownie with the irresistible texture of a cookie. With crackly tops and a dense, chocolatey interior, each bite offers a heavenly experience for chocolate lovers everywhere.</p>
+            <p class="gold-text">Price (6 piece): RM14.00</p>
+            <button class="add-to-cart-btn" data-item="Brownie Cookies" data-price="14.00">Add to Cart</button>
+        </div>
+    </section>
+
+    <!-- Shopping cart UI -->
+    <div id="shopping-cart">
+        <h2>Shopping Cart</h2>
+        <div id="cart-items"></div>
+        <div id="total-price">Total: RM0.00</div>
+        <button id="close-btn">Close</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const addToCartButtons = document.querySelectorAll(".add-to-cart-btn");
+            const shoppingCart = document.getElementById("shopping-cart");
+            const cartItemsContainer = document.getElementById("cart-items");
+            const totalPriceDisplay = document.getElementById("total-price");
+            const closeBtn = document.getElementById("close-btn");
+
+            addToCartButtons.forEach(button => {
+                button.addEventListener("click", function() {
+                    const itemName = button.getAttribute("data-item");
+                    const itemPrice = parseFloat(button.getAttribute("data-price"));
+
+                    // Create or update cart item
+                    const existingCartItem = cartItemsContainer.querySelector(`[data-item="${itemName}"]`);
+                    if (existingCartItem) {
+                        const quantity = parseInt(existingCartItem.getAttribute("data-quantity")) + 1;
+                        existingCartItem.setAttribute("data-quantity", quantity);
+                        existingCartItem.innerHTML = `<strong>${itemName}</strong> - Quantity: ${quantity} - RM${(quantity * itemPrice).toFixed(2)}`;
+                    } else {
+                        const cartItem = document.createElement("div");
+                        cartItem.classList.add("cart-item");
+                        cartItem.setAttribute("data-item", itemName);
+                        cartItem.setAttribute("data-quantity", 1);
+                        cartItem.innerHTML = `<strong>${itemName}</strong> - Quantity: 1 - RM${itemPrice.toFixed(2)}`;
+                        cartItemsContainer.appendChild(cartItem);
+                    }
+
+                    // Calculate total price
+                    const totalItems = Array.from(cartItemsContainer.children);
+                    const totalPrice = totalItems.reduce((total, item) => {
+                        const itemPrice = parseFloat(item.innerHTML.match(/RM(\d+\.\d+)/)[1]);
+                        return total + itemPrice;
+                    }, 0);
+                    totalPriceDisplay.textContent = `Total: RM${totalPrice.toFixed(2)}`;
+
+                    // Show the shopping cart
+                    shoppingCart.classList.add("show");
+
+                    // Here you can write the logic to add the item to the cart
+                    // For demonstration purposes, let's just log the item name and price
+                    console.log("Added to cart: " + itemName + " - RM" + itemPrice.toFixed(2));
+                });
+            });
+
+            // Close button functionality
+            closeBtn.addEventListener("click", function() {
+                shoppingCart.classList.remove("show");
+            });
+        });
+    </script>
+</body>
+</html>
